@@ -15,21 +15,30 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Link } from 'react-router-dom'; // ⬅️ Add this
 
 const Navbar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const navLinks = ['Home', 'Popular', 'Favourites', 'Sign In'];
+  // Link config with routes
+  const navLinks = [
+    { label: 'Home', path: '/' },
+    { label: 'Popular', path: '/popular' },
+    { label: 'Favourites', path: '/favourites' },
+    { label: 'Sign In', path: '/signin' },
+  ];
 
   return (
     <>
       <AppBar position="static" sx={{ backgroundColor: '#141414' }}>
         <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
-          {/* Left: Logo */}
+          {/* Logo */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button
+              component={Link}
+              to="/"
               variant="text"
               sx={{
                 color: '#f5c518',
@@ -38,16 +47,21 @@ const Navbar = () => {
                 textTransform: 'none',
               }}
             >
-              JustWatch
+              MovieExplore
             </Button>
           </Box>
 
-          {/* Center: Desktop Nav Links */}
+          {/* Desktop Nav Links */}
           {!isMobile && (
             <Stack direction="row" spacing={3}>
               {navLinks.slice(0, 3).map((link) => (
-                <Button key={link} sx={{ color: 'white' }}>
-                  {link}
+                <Button
+                  key={link.label}
+                  component={Link}
+                  to={link.path}
+                  sx={{ color: 'white' }}
+                >
+                  {link.label}
                 </Button>
               ))}
             </Stack>
@@ -60,7 +74,12 @@ const Navbar = () => {
             </IconButton>
 
             {!isMobile && (
-              <Button variant="outlined" color="inherit">
+              <Button
+                component={Link}
+                to="/signin"
+                variant="outlined"
+                color="inherit"
+              >
                 Sign In
               </Button>
             )}
@@ -85,9 +104,14 @@ const Navbar = () => {
       >
         <Box sx={{ width: 250 }} onClick={() => setDrawerOpen(false)}>
           <List>
-            {navLinks.map((text) => (
-              <ListItem button key={text}>
-                <ListItemText primary={text} />
+            {navLinks.map((link) => (
+              <ListItem
+                button
+                key={link.label}
+                component={Link}
+                to={link.path}
+              >
+                <ListItemText primary={link.label} />
               </ListItem>
             ))}
           </List>

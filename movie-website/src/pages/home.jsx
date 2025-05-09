@@ -71,7 +71,9 @@ const HomePage = () => {
       <Box
         sx={{
           height: '90vh',
-          background: 'linear-gradient(to right, #1c1c1c, #333)',
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1577033117892-6d498c6c7921?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -86,10 +88,10 @@ const HomePage = () => {
             fontWeight="bold"
             gutterBottom
           >
-            Your streaming guide for movies, TV shows & sports
+            Your streaming guide for movies
           </Typography>
           <Typography variant="body1" sx={{ mb: 4, px: 1 }}>
-            Find where to stream new, popular & upcoming entertainment.
+            Find where to stream new, popular & upcoming entertainment
           </Typography>
           <Stack
             direction={isMobile ? 'column' : 'row'}
@@ -98,7 +100,7 @@ const HomePage = () => {
             alignItems="center"
           >
             <Button variant="contained" color="warning" fullWidth={isMobile}>
-              Discover Movies & TV Shows
+              Popular Movies
             </Button>
             <Button
               variant="outlined"
@@ -106,7 +108,7 @@ const HomePage = () => {
               fullWidth={isMobile}
               sx={{ mt: isMobile ? 1 : 0 }}
             >
-              Features
+              Sign Up
             </Button>
           </Stack>
         </Box>
