@@ -13,58 +13,82 @@ import axios from 'axios';
 import Navbar from '../components/navbar';
 import MovieCard from '../components/movieCard';
 
-const API_URL = 'https://api.themoviedb.org/3/discover/movie';
-const API_KEY = 'API_KEY'; 
-
 const HomePage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [movies, setMovies] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const fetchMovies = async () => {
-    if (totalPages && page > totalPages) return;
+  const url =
+    'https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc';
 
-    setLoading(true);
-    try {
-      const res = await axios.get(API_URL, {
-        params: {
-          include_adult: false,
-          include_video: false,
-          language: 'en-US',
-          page,
-          sort_by: 'popularity.desc',
-        },
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${API_KEY}`,
-        },
-      });
-
-      setMovies((prev) => [...prev, ...res.data.results]);
-      setTotalPages(res.data.total_pages);
-    } catch (error) {
-      console.error('Error fetching movies:', error);
-    }
-    setLoading(false);
+  const headers = {
+    accept: 'application/json',
+    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzYjUwNzU3ZGM1OWZjYTQxMjlkYTZhYTQ3Yjk5MTY1NSIsIm5iZiI6MTc0NjgwNzAzMS41NTQsInN1YiI6IjY4MWUyOGY3ZjYxYmUyZDhjNjkzYjQ0MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.5o8x0cCOOSaDOKZ0kLiF500tjHU4m7KyflDggXt2wAE',
   };
 
   useEffect(() => {
-    fetchMovies();
-  }, [page]);
-
-  const handleLoadMore = () => {
-    setPage((prev) => prev + 1);
-  };
+    axios
+      .get(url, { headers })
+      .then((res) => {
+        setMovies(res.data.results);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div>
       <Navbar />
 
-      {/* Hero Section – keep your existing hero code here */}
+      {/* Hero Section */}
+      <Box
+        sx={{
+          height: '90vh',
+          background: 'linear-gradient(to right, #1c1c1c, #333)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#fff',
+          textAlign: 'center',
+          px: 2,
+        }}
+      >
+        <Box sx={{ zIndex: 1, maxWidth: 700 }}>
+          <Typography
+            variant={isMobile ? 'h5' : 'h3'}
+            fontWeight="bold"
+            gutterBottom
+          >
+            Your streaming guide for movies, TV shows & sports
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 4, px: 1 }}>
+            Find where to stream new, popular & upcoming entertainment.
+          </Typography>
+          <Stack
+            direction={isMobile ? 'column' : 'row'}
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Button variant="contained" color="warning" fullWidth={isMobile}>
+              Discover Movies & TV Shows
+            </Button>
+            <Button
+              variant="outlined"
+              color="inherit"
+              fullWidth={isMobile}
+              sx={{ mt: isMobile ? 1 : 0 }}
+            >
+              Features
+            </Button>
+          </Stack>
+        </Box>
+      </Box>
 
       <Box sx={{ mt: 4, px: 2 }}>
         <Typography variant="h5" mb={2}>
@@ -77,20 +101,6 @@ const HomePage = () => {
             </Grid>
           ))}
         </Grid>
-
-        <Stack alignItems="center" mt={5} mb={5}>
-          {loading ? (
-            <CircularProgress />
-          ) : page < totalPages ? (
-            <Button variant="contained" onClick={handleLoadMore}>
-              Load More
-            </Button>
-          ) : (
-            <Typography variant="body2" color="text.secondary">
-              You have reached the end.
-            </Typography>
-          )}
-        </Stack>
       </Box>
     </div>
   );
