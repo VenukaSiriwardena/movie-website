@@ -18,28 +18,50 @@ const HomePage = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const url =
-    'https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc';
+  const fetchMovies = async (pageNumber) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${pageNumber}&sort_by=popularity.desc`,
+        {
+          headers: {
+            accept: 'application/json',
+            Authorization:
+              'Bearer {API_KEY}',
+          },
+        }
+      );
 
-  const headers = {
-    accept: 'application/json',
-    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzYjUwNzU3ZGM1OWZjYTQxMjlkYTZhYTQ3Yjk5MTY1NSIsIm5iZiI6MTc0NjgwNzAzMS41NTQsInN1YiI6IjY4MWUyOGY3ZjYxYmUyZDhjNjkzYjQ0MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.5o8x0cCOOSaDOKZ0kLiF500tjHU4m7KyflDggXt2wAE',
+      const fetchedMovies = response.data.results;
+      const totalPagesFromApi = response.data.total_pages;
+
+      // Only append new movies if they don't already exist (to avoid duplicates)
+      setMovies((prevMovies) => {
+        const movieIds = new Set(prevMovies.map((m) => m.id));
+        const uniqueNewMovies = fetchedMovies.filter((m) => !movieIds.has(m.id));
+        return [...prevMovies, ...uniqueNewMovies];
+      });
+
+      setTotalPages(totalPagesFromApi);
+    } catch (error) {
+      console.error('Failed to fetch movies:', error);
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
-    axios
-      .get(url, { headers })
-      .then((res) => {
-        setMovies(res.data.results);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+    fetchMovies(page);
+  }, [page]);
+
+  const handleLoadMore = () => {
+    if (!loading && page < totalPages) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
   return (
     <div>
@@ -90,10 +112,8 @@ const HomePage = () => {
         </Box>
       </Box>
 
+      {/* Movies Section */}
       <Box sx={{ mt: 4, px: 2 }}>
-        <Typography variant="h5" mb={2}>
-          Popular Movies
-        </Typography>
         <Grid container spacing={2} justifyContent="center">
           {movies.map((movie) => (
             <Grid item key={movie.id}>
@@ -101,6 +121,18 @@ const HomePage = () => {
             </Grid>
           ))}
         </Grid>
+
+        <Stack alignItems="center" mt={5} mb={5}>
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            page < totalPages && (
+              <Button variant="contained" onClick={handleLoadMore}>
+                Load More
+              </Button>
+            )
+          )}
+        </Stack>
       </Box>
     </div>
   );
