@@ -30,10 +30,10 @@ const HomePage = () => {
         {
           headers: {
             accept: 'application/json',
-            Authorization:
-              'Bearer {API_KEY}',
+            Authorization: `Bearer ${import.meta.env.VITE_MOVIE_API}`,
           },
         }
+        
       );
 
       const fetchedMovies = response.data.results;
