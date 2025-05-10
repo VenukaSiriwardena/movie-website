@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom'; // ✅ ADD THIS LINE
 import axios from 'axios';
 import Navbar from '../components/navbar';
 import MovieCard from '../components/movieCard';
+import Footer from '../components/footer';
 
 const HomePage = () => {
   const theme = useTheme();
@@ -144,6 +145,7 @@ const HomePage = () => {
           )}
         </Stack>
       </Box>
+      <Footer />
     </div>
   );
 };

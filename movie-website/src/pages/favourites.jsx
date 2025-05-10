@@ -3,15 +3,31 @@ import { useAuth } from '../components/AuthContext';
 import { Box, Typography, Grid } from '@mui/material';
 import MovieCard from '../components/movieCard';
 import Navbar from '../components/navbar';
+import Footer from '../components/footer';
 
 const Favourites = () => {
   const { favourites } = useAuth();
 
   return (
-    <Box minHeight="100vh">
+    <Box display="flex" flexDirection="column" minHeight="100vh">
       <Navbar />
-      <Box p={2}>
-        <Typography variant="h4" mb={3}>Your Favourites</Typography>
+
+      {/* Hero Section */}
+      <Box
+        sx={{
+          py: 6,
+          backgroundColor: '#1c1c1c',
+          color: '#fff',
+          textAlign: 'center',
+        }}
+      >
+        <Typography variant="h3" fontWeight="bold">
+          Your Favourites
+        </Typography>
+      </Box>
+
+      {/* Movie Grid */}
+      <Box flexGrow={1} p={2}>
         {favourites.length === 0 ? (
           <Typography>No favourite movies yet.</Typography>
         ) : (
@@ -24,6 +40,8 @@ const Favourites = () => {
           </Grid>
         )}
       </Box>
+
+      <Footer />
     </Box>
   );
 };

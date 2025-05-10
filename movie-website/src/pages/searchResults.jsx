@@ -12,6 +12,7 @@ import {
 import axios from 'axios';
 import Navbar from '../components/navbar';
 import MovieCard from '../components/movieCard';
+import Footer from '../components/footer';
 
 const SearchResults = () => {
   const { query } = useParams();
@@ -50,7 +51,7 @@ const SearchResults = () => {
   }, [searchQuery]);
 
   return (
-    <div>
+    <Box display="flex" flexDirection="column" minHeight="100vh">
       <Navbar />
 
       {/* Hero Section */}
@@ -73,7 +74,7 @@ const SearchResults = () => {
       </Box>
 
       {/* Movies Section */}
-      <Box sx={{ mt: 4, px: 2 }}>
+      <Box flexGrow={1} sx={{ mt: 4, px: 2 }}>
         {loading ? (
           <Stack alignItems="center" mt={5} mb={5}>
             <CircularProgress />
@@ -92,7 +93,9 @@ const SearchResults = () => {
           </Typography>
         )}
       </Box>
-    </div>
+
+      <Footer />
+    </Box>
   );
 };
 

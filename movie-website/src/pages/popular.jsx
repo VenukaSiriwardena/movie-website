@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
-  Button,
   Stack,
   useMediaQuery,
   useTheme,
@@ -12,6 +11,7 @@ import {
 import axios from 'axios';
 import Navbar from '../components/navbar';
 import MovieCard from '../components/movieCard';
+import Footer from '../components/footer';
 
 const HomePage = () => {
   const theme = useTheme();
@@ -33,10 +33,7 @@ const HomePage = () => {
         }
       );
 
-      const fetchedMovies = response.data.results;
-
-      // Set movies directly as we no longer have pagination
-      setMovies(fetchedMovies);
+      setMovies(response.data.results);
     } catch (error) {
       console.error('Failed to fetch movies:', error);
     }
@@ -48,26 +45,25 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div>
+    <Box display="flex" flexDirection="column" minHeight="100vh">
       <Navbar />
 
       {/* Hero Section */}
-      {/* Hero Section */}
-        <Box
+      <Box
         sx={{
-            py: 6,
-            backgroundColor: '#1c1c1c',
-            color: '#fff',
-            textAlign: 'center',
+          py: 6,
+          backgroundColor: '#1c1c1c',
+          color: '#fff',
+          textAlign: 'center',
         }}
-        >
+      >
         <Typography variant={isMobile ? 'h5' : 'h3'} fontWeight="bold">
-            Popular Movies
+          Popular Movies
         </Typography>
-        </Box>
+      </Box>
 
       {/* Movies Section */}
-      <Box sx={{ mt: 4, px: 2 }}>
+      <Box flexGrow={1} sx={{ mt: 4, px: 2 }}>
         <Grid container spacing={2} justifyContent="center">
           {movies.map((movie) => (
             <Grid item key={movie.id}>
@@ -82,7 +78,9 @@ const HomePage = () => {
           </Stack>
         )}
       </Box>
-    </div>
+
+      <Footer />
+    </Box>
   );
 };
 
