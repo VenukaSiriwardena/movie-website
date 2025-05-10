@@ -9,61 +9,68 @@ import {
   useMediaQuery,
 } from '@mui/material';
 
+// MovieCard component to display individual movie details
 const MovieCard = ({ movie }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const theme = useTheme(); // Access the current theme
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if the screen size is mobile
 
   return (
+    // Link to navigate to the movie details page
     <Link to={`/movie/${movie.id}`} style={{ textDecoration: 'none' }}>
-    <Card
-      sx={{
-        width: isMobile ? '45%' : 180, // smaller width
-        borderRadius: 2,
-        boxShadow: 3,
-        display: 'flex',
-        flexDirection: 'column',
-        mx: 'auto',
-      }}
-    >
-      {/* Fixed-size image container */}
-      <Box
+      <Card
         sx={{
-          width: '100%',
-          aspectRatio: '2 / 3.2', // slightly shorter
-          overflow: 'hidden',
-          borderTopLeftRadius: 8,
-          borderTopRightRadius: 8,
+          width: isMobile ? '45%' : 180, // Adjust width based on screen size
+          borderRadius: 2, 
+          boxShadow: 3, 
+          display: 'flex',
+          flexDirection: 'column',
+          mx: 'auto', 
         }}
       >
-        <img
-          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-          alt={movie.title}
-          style={{
+        {/* Box to contain the movie poster */}
+        <Box
+          sx={{
             width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            display: 'block',
+            aspectRatio: '2 / 3.2', 
+            overflow: 'hidden', 
+            borderTopLeftRadius: 8, 
+            borderTopRightRadius: 8, 
           }}
-        />
-      </Box>
-
-      <CardContent sx={{ p: 1 }}>
-        <Typography
-          variant="subtitle2"
-          fontWeight="bold"
-          noWrap
-          sx={{ mb: 0.5 }}
         >
-          {movie.title}
-        </Typography>
-        <Typography variant="caption" color="text.secondary">
-          {new Date(movie.release_date).getFullYear()}
-        </Typography>
-        <Typography variant="caption" color="text.secondary">
-          ⭐ {movie.vote_average.toFixed(1)} / 10
-        </Typography>
-      </CardContent>
-    </Card>
+          {/* Movie poster image */}
+          <img
+            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} // Poster image URL
+            alt={movie.title} 
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover', // Cover the container
+              display: 'block',
+            }}
+          />
+        </Box>
+
+        {/* Card content for movie details */}
+        <CardContent sx={{ p: 1 }}>
+          {/* Movie title */}
+          <Typography
+            variant="subtitle2"
+            fontWeight="bold"
+            noWrap
+            sx={{ mb: 0.5 }}
+          >
+            {movie.title}
+          </Typography>
+          {/* Release year */}
+          <Typography variant="caption" color="text.secondary">
+            {new Date(movie.release_date).getFullYear()}
+          </Typography>
+          {/* Movie rating */}
+          <Typography variant="caption" color="text.secondary">
+            ⭐ {movie.vote_average.toFixed(1)} / 10
+          </Typography>
+        </CardContent>
+      </Card>
     </Link>
   );
 };
