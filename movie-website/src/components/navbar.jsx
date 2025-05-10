@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -17,14 +17,19 @@ import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ThemeContext } from './themeContext';
 
 const Navbar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [lastSearch, setLastSearch] = useState('');
+  const [showLast, setShowLast] = useState(false);
 
+  const navigate = useNavigate();
   const { toggleColorMode, mode } = useContext(ThemeContext);
 
   const navLinks = [
@@ -33,6 +38,21 @@ const Navbar = () => {
     { label: 'Favourites', path: '/favourites' },
     { label: 'Sign In', path: '/signin' },
   ];
+
+  useEffect(() => {
+    const stored = localStorage.getItem('lastSearch');
+    if (stored) setLastSearch(stored);
+  }, []);
+
+  const handleSearch = () => {
+    if (searchText.trim() !== '') {
+      navigate(`/search/${searchText}`);
+      localStorage.setItem('lastSearch', searchText);
+      setLastSearch(searchText);
+      setSearchText('');
+      setSearchOpen(false);
+    }
+  };
 
   return (
     <>
@@ -70,9 +90,55 @@ const Navbar = () => {
           )}
 
           <Stack direction="row" spacing={1} alignItems="center">
-            <IconButton sx={{ color: 'white' }}>
+            {searchOpen ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', position: 'relative' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <input
+                  type="text"
+                  placeholder="Search movies..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  onFocus={() => setShowLast(true)}
+                  style={{
+                    padding: '6px 8px',
+                    borderRadius: '4px',
+                    border: 'none',
+                    fontSize: '0.9rem',
+                    maxWidth: isMobile ? '120px' : '200px',
+                    width: '100%',
+                  }}
+                />
+                <Button onClick={handleSearch} variant="contained" size="small" sx={{ ml: 1, whiteSpace: 'nowrap' }}>
+                  Go
+                </Button>
+              </Box>
+
+              {showLast && searchText === '' && lastSearch && (
+                <Button
+                  size="small"
+                  sx={{
+                    mt: 0.5,
+                    textTransform: 'none',
+                    fontSize: '0.75rem',
+                    color: '#f5c518',
+                    minHeight: 'auto',
+                    padding: '2px 4px',
+                  }}
+                  onClick={() => {
+                    setSearchText(lastSearch);
+                    navigate(`/search/${lastSearch}`);
+                    setSearchOpen(false);
+                  }}
+                >
+                  Last search: {lastSearch}
+                </Button>
+              )}
+            </Box>
+          ) : (
+            <IconButton sx={{ color: 'white' }} onClick={() => setSearchOpen(true)}>
               <SearchIcon />
             </IconButton>
+          )}
 
             <IconButton onClick={toggleColorMode} sx={{ color: 'white' }}>
               {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}

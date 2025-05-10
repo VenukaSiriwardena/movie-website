@@ -17,6 +17,8 @@ const MovieDetail = () => {
   const [movie, setMovie] = useState(null);
   const [cast, setCast] = useState([]);
   const [trailerUrl, setTrailerUrl] = useState('');
+  const { addFavourite, removeFavourite, isFavourite, user } = useAuth();
+
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -162,6 +164,31 @@ const MovieDetail = () => {
         </Button>
       </Box>
     )}
+    <Box mt={2}>
+        {user ? (
+            isFavourite(movie.id) ? (
+            <Button
+                variant="outlined"
+                color="error"
+                onClick={() => removeFavourite(movie.id)}
+                sx={{ mr: 2 }}
+            >
+                Remove Favourite
+            </Button>
+            ) : (
+            <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => addFavourite(movie)}
+                sx={{ mr: 2 }}
+            >
+                Add to Favourites
+            </Button>
+            )
+        ) : (
+            <Typography color="error">Login to add favourites</Typography>
+        )}
+        </Box>
   </Grid>
 </Grid>
 
