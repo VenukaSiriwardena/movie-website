@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Card,
   CardContent,
@@ -13,6 +14,7 @@ const MovieCard = ({ movie }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
+    <Link to={`/movie/${movie.id}`} style={{ textDecoration: 'none' }}>
     <Card
       sx={{
         width: isMobile ? '45%' : 180, // smaller width
@@ -62,6 +64,7 @@ const MovieCard = ({ movie }) => {
         </Typography>
       </CardContent>
     </Card>
+    </Link>
   );
 };
 
