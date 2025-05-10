@@ -19,6 +19,7 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { Link, useNavigate } from 'react-router-dom';
 import { ThemeContext } from './themeContext';
+import { useAuth } from '../components/AuthContext';
 
 const Navbar = () => {
   const theme = useTheme();
@@ -31,12 +32,12 @@ const Navbar = () => {
 
   const navigate = useNavigate();
   const { toggleColorMode, mode } = useContext(ThemeContext);
+  const { user, logout } = useAuth(); // 🔥 Auth context
 
   const navLinks = [
     { label: 'Home', path: '/' },
     { label: 'Popular', path: '/popular' },
     { label: 'Favourites', path: '/favourites' },
-    { label: 'Sign In', path: '/signin' },
   ];
 
   useEffect(() => {
@@ -76,7 +77,7 @@ const Navbar = () => {
 
           {!isMobile && (
             <Stack direction="row" spacing={3}>
-              {navLinks.slice(0, 3).map((link) => (
+              {navLinks.map((link) => (
                 <Button
                   key={link.label}
                   component={Link}
@@ -91,68 +92,78 @@ const Navbar = () => {
 
           <Stack direction="row" spacing={1} alignItems="center">
             {searchOpen ? (
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', position: 'relative' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <input
-                  type="text"
-                  placeholder="Search movies..."
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  onFocus={() => setShowLast(true)}
-                  style={{
-                    padding: '6px 8px',
-                    borderRadius: '4px',
-                    border: 'none',
-                    fontSize: '0.9rem',
-                    maxWidth: isMobile ? '120px' : '200px',
-                    width: '100%',
-                  }}
-                />
-                <Button onClick={handleSearch} variant="contained" size="small" sx={{ ml: 1, whiteSpace: 'nowrap' }}>
-                  Go
-                </Button>
-              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', position: 'relative' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <input
+                    type="text"
+                    placeholder="Search movies..."
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    onFocus={() => setShowLast(true)}
+                    style={{
+                      padding: '6px 8px',
+                      borderRadius: '4px',
+                      border: 'none',
+                      fontSize: '0.9rem',
+                      maxWidth: isMobile ? '120px' : '200px',
+                      width: '100%',
+                    }}
+                  />
+                  <Button onClick={handleSearch} variant="contained" size="small" sx={{ ml: 1, whiteSpace: 'nowrap' }}>
+                    Go
+                  </Button>
+                </Box>
 
-              {showLast && searchText === '' && lastSearch && (
-                <Button
-                  size="small"
-                  sx={{
-                    mt: 0.5,
-                    textTransform: 'none',
-                    fontSize: '0.75rem',
-                    color: '#f5c518',
-                    minHeight: 'auto',
-                    padding: '2px 4px',
-                  }}
-                  onClick={() => {
-                    setSearchText(lastSearch);
-                    navigate(`/search/${lastSearch}`);
-                    setSearchOpen(false);
-                  }}
-                >
-                  Last search: {lastSearch}
-                </Button>
-              )}
-            </Box>
-          ) : (
-            <IconButton sx={{ color: 'white' }} onClick={() => setSearchOpen(true)}>
-              <SearchIcon />
-            </IconButton>
-          )}
+                {showLast && searchText === '' && lastSearch && (
+                  <Button
+                    size="small"
+                    sx={{
+                      mt: 0.5,
+                      textTransform: 'none',
+                      fontSize: '0.75rem',
+                      color: '#f5c518',
+                      minHeight: 'auto',
+                      padding: '2px 4px',
+                    }}
+                    onClick={() => {
+                      setSearchText(lastSearch);
+                      navigate(`/search/${lastSearch}`);
+                      setSearchOpen(false);
+                    }}
+                  >
+                    Last search: {lastSearch}
+                  </Button>
+                )}
+              </Box>
+            ) : (
+              <IconButton sx={{ color: 'white' }} onClick={() => setSearchOpen(true)}>
+                <SearchIcon />
+              </IconButton>
+            )}
 
             <IconButton onClick={toggleColorMode} sx={{ color: 'white' }}>
               {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
 
             {!isMobile && (
-              <Button
-                component={Link}
-                to="/signin"
-                variant="outlined"
-                color="inherit"
-              >
-                Sign In
-              </Button>
+              user ? (
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  onClick={logout}
+                >
+                  Sign Out
+                </Button>
+              ) : (
+                <Button
+                  component={Link}
+                  to="/signin"
+                  variant="outlined"
+                  color="inherit"
+                >
+                  Sign In
+                </Button>
+              )
             )}
 
             {isMobile && (
@@ -184,6 +195,13 @@ const Navbar = () => {
                 <ListItemText primary={link.label} />
               </ListItem>
             ))}
+
+            <ListItem
+              button
+              onClick={user ? logout : () => navigate('/signin')}
+            >
+              <ListItemText primary={user ? 'Sign Out' : 'Sign In'} />
+            </ListItem>
           </List>
         </Box>
       </Drawer>

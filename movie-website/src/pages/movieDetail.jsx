@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import Navbar from '../components/navbar';
+import { useAuth } from '../components/AuthContext';
 
 const MovieDetail = () => {
   const { id } = useParams();

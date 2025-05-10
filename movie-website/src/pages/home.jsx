@@ -9,6 +9,7 @@ import {
   Grid,
   CircularProgress,
 } from '@mui/material';
+import { Link } from 'react-router-dom'; // ✅ ADD THIS LINE
 import axios from 'axios';
 import Navbar from '../components/navbar';
 import MovieCard from '../components/movieCard';
@@ -33,13 +34,11 @@ const HomePage = () => {
             Authorization: `Bearer ${import.meta.env.VITE_MOVIE_API}`,
           },
         }
-        
       );
 
       const fetchedMovies = response.data.results;
       const totalPagesFromApi = response.data.total_pages;
 
-      // Only append new movies if they don't already exist (to avoid duplicates)
       setMovies((prevMovies) => {
         const movieIds = new Set(prevMovies.map((m) => m.id));
         const uniqueNewMovies = fetchedMovies.filter((m) => !movieIds.has(m.id));
@@ -99,14 +98,23 @@ const HomePage = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Button variant="contained" color="warning" fullWidth={isMobile}>
+            <Button
+              variant="contained"
+              color="warning"
+              fullWidth={isMobile}
+              component={Link}
+              to="/popular"
+            >
               Popular Movies
             </Button>
+
             <Button
               variant="outlined"
               color="inherit"
               fullWidth={isMobile}
               sx={{ mt: isMobile ? 1 : 0 }}
+              component={Link}
+              to="/signup"
             >
               Sign Up
             </Button>
